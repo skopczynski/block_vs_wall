@@ -46,7 +46,7 @@ public class SnakeGameEngine extends SurfaceView implements Runnable {
 
     private String pauseOrPlay;
     private volatile boolean isPlaying;
-
+    private boolean firstMove;
     private Canvas canvas;
     private int spreadFactor;
     private SurfaceHolder surfaceHolder;
@@ -84,7 +84,7 @@ public class SnakeGameEngine extends SurfaceView implements Runnable {
                 update();
                 draw();
             }
-            if(pauseOrPlay == "Start" && nextFrameTime < System.currentTimeMillis())
+            if(pauseOrPlay != "Start" && nextFrameTime < System.currentTimeMillis())
                 this.pause();
 
         }
@@ -292,56 +292,20 @@ public class SnakeGameEngine extends SurfaceView implements Runnable {
                     }
                 }
             case MotionEvent.ACTION_DOWN:
-                oldSnakeX = motionEvent.getX();
+                double newSnake = (motionEvent.getX() / (NUM_BLOCKS_WIDE));
+
+                //newSnake += 20;
+                snakeX -= (snakeX - newSnake);
+
                 break;
             case MotionEvent.ACTION_MOVE:
                 double newX = motionEvent.getX() / NUM_BLOCKS_WIDE;
-                double deltaX = oldSnakeX-newX;
-                snakeX -= deltaX;
-                oldSnakeX = snakeX;
-                /*
-                if(deltaX > 0){
-                    snakeX += deltaX;
-                    oldSnakeX = (int) motionEvent.getX();
-                }
+                if(snakeX > 15)
+                    snakeX -= (snakeX - newX) - ((newX - 20) + 5);
                 else{
-                    snakeX +=0.4;
-                    oldSnakeX = (int) motionEvent.getX();
-
+                    snakeX -= (snakeX - newX);
                 }
-                */
-                /*
-                else if (motionEvent.getX() >= screenX / 2) {
-                    switch(heading){
-                        case UP:
-                            heading = Heading.RIGHT;
-                            break;
-                        case RIGHT:
-                            heading = Heading.DOWN;
-                            break;
-                        case DOWN:
-                            heading = Heading.LEFT;
-                            break;
-                        case LEFT:
-                            heading = Heading.UP;
-                            break;
-                    }
-                } else {
-                    switch(heading){
-                        case UP:
-                            heading = Heading.LEFT;
-                            break;
-                        case LEFT:
-                            heading = Heading.DOWN;
-                            break;
-                        case DOWN:
-                            heading = Heading.RIGHT;
-                            break;
-                        case RIGHT:
-                            heading = Heading.UP;
-                            break;
-                    }
-                }*/
+                //oldSnakeX = snakeX;
         }
         return true;
     }
